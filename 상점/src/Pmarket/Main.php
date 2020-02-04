@@ -95,7 +95,13 @@ class Main extends PluginBase implements Listener {
       unset($this->tb['가격설정활동']);
       unset($this->db['가격설정']);
       unset($this->tb['활동']);
+      unset($this->db['케이스']);
       $this->save();
+
+      if(isset($this->db['케이스소환자'])){
+        unset($this->db['케이스소환자']);
+        $this->save();
+      }
     }
 
     public function ShopUi(Player $player, $ItemName, $price, $sell){
@@ -264,14 +270,7 @@ class Main extends PluginBase implements Listener {
          return true;
        }
        $item = $player->getInventory()->getItemInHand();
-       $item->setCount(1);
-       $packet = new AddItemActorPacket ();
-       $packet->entityRuntimeId = $this->db['케이스'][count($this->db['상점'])] = Entity::$entityCount++;
-       $packet->item = $item;
-       $packet->position = new Position($block->getX() + 0.5, (float) $block->getY() + 0.25, $block->getZ() + 0.5, $block->getLevel());
-       $packet->motion = new Vector3 (0, 0, 0);
-       $packet->metadata = [Entity::DATA_FLAGS => [Entity::DATA_TYPE_LONG, 1 << Entity::DATA_FLAG_IMMOBILE]];
-       $player->dataPacket ($packet);
+
        $this->db['상점'][count($this->db['상점'])] = [
          '아이템' => $item->jsonSerialize(),
          '이름' => $item->getName(),
@@ -296,7 +295,7 @@ class Main extends PluginBase implements Listener {
      }
 
    if(isset($this->tb['상점'][$pos])){
-     
+
      if(isset($this->db['상점제거'][$name])){
          unset($this->db['상점'][$this->tb['상점'][$pos]['번호']]);
          unset($this->sb['상점아이템'][$this->tb['상점'][$pos]['아이템이름']]);
@@ -325,6 +324,9 @@ class Main extends PluginBase implements Listener {
 
 
     if(!isset($this->db['가격설정'][$name])){
+    if(isset($this->db['상점제거'][$name])){
+      return true;
+    }
      if(isset($this->tb['활동'][$name])){
        return true;
      }
@@ -528,14 +530,14 @@ class Main extends PluginBase implements Listener {
       }
 
       public function onJoin(PlayerJoinEvent $ev){
-        $player = $ev->getPlayer();
-        if(isset($this->sub['케이스'])){
-        if(!isset($this->sub['케이스소환자'])){
-          $this->db['케이스소환자'] = '온';
-          $this->ItemCase($player);
+          $player = $ev->getPlayer();
+          if(isset($this->sub['케이스'])){
+          if(!isset($this->sub['케이스소환자'])){
+            $this->db['케이스소환자'] = '온';
+            $this->ItemCase($player);
+              }
             }
-          }
-      }
+        }
 
 
       public function removeItemCase(Player $player){
@@ -546,24 +548,25 @@ class Main extends PluginBase implements Listener {
         $player->sendDataPacket($packet);
         }
         unset($this->db['케이스']);
+        $this->save();
    }
  }
 
-      public function ItemCase(Player $player){
-              for($i = 0; $i < count($this->db['상점']); $i++){
-        $xyz = $pos=explode(':', $item = $this->db['상점'][$i]['좌표']);
-        $item = Item::jsonDeserialize($this->db['상점'][$i]['아이템']);
-        $item->setCount(1);
-        $packet = new AddItemActorPacket ();
-        $packet->entityRuntimeId = $this->db['케이스'][$i] = Entity::$entityCount++;
-        $this->save();
+ public function ItemCase(Player $player){
+         for($i = 0; $i < count($this->db['상점']); $i++){
+   $xyz = $pos=explode(':', $item = $this->db['상점'][$i]['좌표']);
+   $item = Item::jsonDeserialize($this->db['상점'][$i]['아이템']);
+   $item->setCount(1);
+   $packet = new AddItemActorPacket ();
+   $packet->entityRuntimeId = $this->db['케이스'][$i] = $i + 9999;
+   $this->save();
 
-        $packet->item = $item;
-        $packet->position = new Position($xyz[0] + 0.5, (float) $xyz[1] + 0.25, $xyz[2] + 0.5, $player->getLevel());
-        $packet->motion = new Vector3 (0, 0, 0);
-        $packet->metadata = [Entity::DATA_FLAGS => [Entity::DATA_TYPE_LONG, 1 << Entity::DATA_FLAG_IMMOBILE]];
-        $player->dataPacket ($packet);
- }
+   $packet->item = $item;
+   $packet->position = new Position($xyz[0] + 0.5, (float) $xyz[1] + 0.25, $xyz[2] + 0.5, $player->getLevel());
+   $packet->motion = new Vector3 (0, 0, 0);
+   $packet->metadata = [Entity::DATA_FLAGS => [Entity::DATA_TYPE_LONG, 1 << Entity::DATA_FLAG_IMMOBILE]];
+   $player->dataPacket ($packet);
+}
 }
 }
 
@@ -580,8 +583,8 @@ class Main extends PluginBase implements Listener {
               $this->owner->ItemCase($player);
               if(isset($this->owner->db['케이스소환자'])){
                 unset($this->owner->db['케이스소환자']);
-              }
+                $this->save();
+          }
         }
        }
     }
-
