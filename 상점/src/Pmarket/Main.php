@@ -419,6 +419,10 @@ class Main extends PluginBase implements Listener {
     }
 
       if($cmd === '상점'){
+       if(!$sender->isOp()){
+        $sender->sendMessage($this->msg.'권한이 없습니다.');
+        return true;
+       }
         if(!isset($args[0])){
           $sender->sendMessage($this->msg.'/상점 생성 │ 손에든 아이템으로 유리를 터치해주세요');
           $sender->sendMessage($this->msg.'/상점 제거 │ 제거할 상점을 터치해주세요.');
