@@ -188,7 +188,7 @@ class Main extends PluginBase implements Listener {
           $count =$Item->setCount($button[1]);
           if(!$player->getInventory()->contains($count)){
             $player->sendMessage($this->msg."판매하실 아이템이 갯수에 비해 부족합니다.");
-           unset($this->tb['활동'][$name]);
+            unset($this->tb['활동'][$name]);
             return true;
           }
           $ItemName = $this->tb['활동'][$name]['아이템이름'];
@@ -296,6 +296,15 @@ class Main extends PluginBase implements Listener {
      }
 
    if(isset($this->tb['상점'][$pos])){
+     
+     if(isset($this->db['상점제거'][$name])){
+         unset($this->db['상점'][$this->tb['상점'][$pos]['번호']]);
+         unset($this->sb['상점아이템'][$this->tb['상점'][$pos]['아이템이름']]);
+         unset($this->tb['상점'][$pos]);
+         $this->save();
+         $player->sendMessage($this->msg.'성공적으로 상점을 제거를 하셨습니다.');
+     }
+
      if(isset($this->db['가격설정'][$name])){
      if(isset($this->tb['가격설정활동'][$name])){
        return true;
@@ -336,15 +345,6 @@ class Main extends PluginBase implements Listener {
  }
 }
 
-   if(isset($this->db['상점제거'][$name])){
-      if(isset($this->tb['상점'][$pos])){
-       unset($this->db['상점'][$this->tb['상점'][$pos]['번호']]);
-       unset($this->sb['상점아이템'][$this->tb['상점'][$pos]['아이템이름']]);
-       unset($this->tb['상점'][$pos]);
-       $this->save();
-       $player->sendMessage($this->msg.'성공적으로 상점을 제거를 하셨습니다.');
-     }
-   }
  }
 
 
@@ -421,10 +421,10 @@ class Main extends PluginBase implements Listener {
     }
 
       if($cmd === '상점'){
-       if(!$sender->isOp()){
-        $sender->sendMessage($this->msg.'권한이 없습니다.');
-        return true;
-       }
+        if(!$sender->isOp()){
+          $sender->sendMessage($this->msg.'권한 부족합니다.');
+          return true;
+        }
         if(!isset($args[0])){
           $sender->sendMessage($this->msg.'/상점 생성 │ 손에든 아이템으로 유리를 터치해주세요');
           $sender->sendMessage($this->msg.'/상점 제거 │ 제거할 상점을 터치해주세요.');
@@ -584,3 +584,4 @@ class Main extends PluginBase implements Listener {
         }
        }
     }
+
