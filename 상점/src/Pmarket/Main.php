@@ -188,6 +188,7 @@ class Main extends PluginBase implements Listener {
           $count =$Item->setCount($button[1]);
           if(!$player->getInventory()->contains($count)){
             $player->sendMessage($this->msg."판매하실 아이템이 갯수에 비해 부족합니다.");
+           unset($this->tb['활동'][$name]);
             return true;
           }
           $ItemName = $this->tb['활동'][$name]['아이템이름'];
