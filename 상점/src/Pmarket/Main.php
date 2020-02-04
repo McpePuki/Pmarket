@@ -264,6 +264,7 @@ class Main extends PluginBase implements Listener {
          return true;
        }
        $item = $player->getInventory()->getItemInHand();
+       $item->setCount(1);
        $packet = new AddItemActorPacket ();
        $packet->entityRuntimeId = $this->db['케이스'][count($this->db['상점'])] = Entity::$entityCount++;
        $packet->item = $item;
