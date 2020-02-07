@@ -171,7 +171,14 @@ class Main extends PluginBase implements Listener {
           if (!$player->getInventory()->canAddItem($Item)) {
               $player->sendMessage($this->msg."이아이템을 구매하기에는 인벤토리 공간이 부족합니다.");
               unset($this->tb['활동'][$name]);
+           return true;
           }
+           if(EconomyAPI::getInstance()->myMoney($player) < $this->tb['활동'][$name]['구매가']) {
+            $player->sendMessage($this->msg.'금액이 부족합니다.');
+            $pil = $this->tb['활동'][$name]['구매가'] - EconomyAPI::getInstance()->myMoney($player);
+            $player->sendMessage($this->msg.'당신의 돈 : '.EconomyAPI::getInstance()->myMoney($player).' │ 필요한돈 '.$fil);
+            return true;
+           }
           $ItemName = $this->tb['활동'][$name]['아이템이름'];
           $price = $this->tb['활동'][$name]['구매가'];
           $a = $button[1] * $price;
