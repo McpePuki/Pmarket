@@ -180,15 +180,15 @@ class Main extends PluginBase implements Listener {
             $player->sendMessage($this->msg."부족금액 : {$fil} │ 현재금액 : {$my}); 
             return true;
            }
-          $ItemName = $this->tb['활동'][$name]['아이템이름'];
+          $itemname = $this->tb['활동'][$name]['아이템이름'];
           $price = $this->tb['활동'][$name]['구매가'];
           $a = $button[1] * $price;
           $economyAPI = EconomyAPI::getInstance();
           $economyAPI->reduceMoney($player , $a);
           $b = $economyAPI->myMoney($player);
           $player->getInventory()->addItem($Item);
-          $player->sendMessage($this->msg."성공적으로 {$ItemName}(를)을 {$button[1]}개 구매 하셨습니다.");
-          $player->sendMessage($this->msg."소비 금액 : {$a}원 │ 현재 금액 : {$b}");
+          $player->sendMessage($this->msg.'성공적으로'.$itemname.'(를)을 '.$button[1].'개 구매 하셨습니다.');
+          $player->sendMessage($this->msg.'소비 금액 : '.$a.'원 현재 금액 : '.$b);
           unset($this->tb['활동'][$name]);
         }else{
           $player->sendMessage($this->msg.'이아이템은 구매불가 아이템 입니다.');
@@ -201,19 +201,19 @@ class Main extends PluginBase implements Listener {
           $Item = Item::jsonDeserialize($this->tb['활동'][$name]['아이템']);
           $count =$Item->setCount($button[1]);
           if(!$player->getInventory()->contains($count)){
-            $player->sendMessage($this->msg."판매하실 아이템이 갯수에 비해 부족합니다.");
+            $player->sendMessage($this->msg.'판매하실 아이템이 갯수에 비해 부족합니다.');
             unset($this->tb['활동'][$name]);
             return true;
           }
-          $ItemName = $this->tb['활동'][$name]['아이템이름'];
+          $itemname = $this->tb['활동'][$name]['아이템이름'];
           $sell = $this->tb['활동'][$name]['판매가'];
           $a = $button[1] * $sell;
           $economyAPI = EconomyAPI::getInstance();
           $economyAPI->addMoney($player , $a);
           $b = $economyAPI->myMoney($player);
           $player->getInventory()->removeItem($Item);
-          $player->sendMessage($this->msg."성공적으로 {$ItemName}(를)을 {$button[1]}개 판매 하셨습니다.");
-          $player->sendMessage($this->msg."판매 금액 : {$a}원 │ 현재 금액 : {$b}");
+          $player->sendMessage($this->msg.'성공적으로'.$itemname.'(를)을 '.$button[1].'개 판매 하셨습니다.');
+          $player->sendMessage($this->msg.'판매 금액 : '.$a.'원 현재 금액 : '.$b);
           unset($this->tb['활동'][$name]);
         }else {
           $player->sendMessage($this->msg.'이아이템은 판매불가 아이템 입니다.');
