@@ -177,7 +177,7 @@ class Main extends PluginBase implements Listener {
             $player->sendMessage($this->msg."금액이 부족해서 구매를 하실수 없습니다.");
             $my = EconomyAPI::getInstance()->myMoney();
             $fil = $this->tb['활동'][$name]['구매가'] - $my ;
-            $player->sendMessage($this->msg."부족금액 : {$fil} │ 현재금액 : {$my}); 
+            $player->sendMessage($this->msg."부족금액 : {$fil} │ 현재금액 : {$my}");
             return true;
            }
           $itemname = $this->tb['활동'][$name]['아이템이름'];
