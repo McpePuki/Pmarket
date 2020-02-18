@@ -173,7 +173,7 @@ class Main extends PluginBase implements Listener {
               unset($this->tb['활동'][$name]);
            return true;
           }
-           if(EconomyAPI::getInstance()->myMoney() < $this->tb['활동'][$name]['구매가']) {
+           if(EconomyAPI::getInstance()->myMoney() < $this->tb['활동'][$name]['구매가'] * $button[1]) {
             $player->sendMessage($this->msg."금액이 부족해서 구매를 하실수 없습니다.");
             $my = EconomyAPI::getInstance()->myMoney();
             $fil = $this->tb['활동'][$name]['구매가'] - $my ;
